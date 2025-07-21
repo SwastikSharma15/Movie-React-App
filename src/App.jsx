@@ -17,8 +17,6 @@ const API_OPTIONS = {
   }
 }
 
-
-
 const App = () => {
   
   const [searchTerm, setSearchTerm] = useState('')
@@ -32,6 +30,10 @@ const App = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
   const [trendingMovies, setTrendingMovies] = useState([]);
+
+  const [showWarning, setShowWarning] = useState(true);
+
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   useDebounce(() => {
     setDebouncedSearchTerm(searchTerm);
@@ -87,11 +89,43 @@ const App = () => {
     loadTrendingMovies();
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsFadingOut(true); // Start fade-out animation
+  
+      // Then remove the element after animation finishes
+      setTimeout(() => setShowWarning(false), 500); // match fade-out duration
+    }, 10000);
+  
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <main>
       <div className='pattern' />
       <div className='wrapper'>
+
+        {showWarning && (
+          <div
+            className={`fixed top-4 left-4 bg-yellow-200 text-yellow-900 px-4 py-2 rounded shadow-md z-50 text-sm max-w-xs flex items-start justify-between gap-3 transition-opacity duration-500 ${
+              isFadingOut ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            <p>
+              If movies aren't loading in your area, try using a VPN. Some APIs might be region-locked.
+            </p>
+            <button
+              onClick={() => {
+                setIsFadingOut(true);
+                setTimeout(() => setShowWarning(false), 500);
+              }}
+              className="font-bold text-yellow-900 hover:text-yellow-700"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <header>
           <img src='/hero.png' alt="Hero Banner" />
           <h1>
