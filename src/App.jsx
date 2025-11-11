@@ -95,7 +95,7 @@ const App = () => {
   
       // Then remove the element after animation finishes
       setTimeout(() => setShowWarning(false), 500); // match fade-out duration
-    }, 10000);
+    }, 100000);
   
     return () => clearTimeout(timer);
   }, []);
